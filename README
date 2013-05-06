@@ -1,0 +1,13 @@
+README file for qpcr directory/files
+
+This firectory contains scripts related to qpcr/qBiomarker study at IGS
+
+This may initially be a bit of a mess, since I am using gitbhub to sync my efforts across IGS computer(s) (ie., local mac, diag) and personal laptop
+
+Bear with me....
+
+I plan to copy scripts that copy files from flash drive onto local systems
+make a script that maps the Ct vals from certain output files to the 384-96 well format
+Then, performs downsteam analysis. 
+
+Last updated 5/6/13 at 1:18
