@@ -1,0 +1,96 @@
+1	Acidaminococcus fermentans	A1	A2	B1	B2
+2	Aerococcus christensenii	A3	A4	B3	B4
+3	Aerococcus urinae	A5	A6	B5	B6
+4	Aerococcus viridans	A7	A8	B7	B8
+5	Anaerococcus hydrogenalis	A9	A10	B9	B10
+6	Anaerococcus prevotii	A11	A12	B11	B12
+7	Atopobium vaginae	A13	A14	B13	B14
+8	Bacteroides fragilis	A15	A16	B15	B16
+9	Bacteroides ureolyticus	A17	A18	B17	B18
+10	Bifidobacterium bifidum	A19	A20	B19	B20
+11	Bifidobacterium breve	A21	A22	B21	B22
+12	Bifidobacterium dentium	A23	A24	B23	B24
+13	Bifidobacterium longum	C1	C2	D1	D2
+14	Campylobacter fetus	C3	C4	D3	D4
+15	Campylobacter gracilis	C5	C6	D5	D6
+16	Campylobacter rectus	C7	C8	D7	D8
+17	Campylobacter showae	C9	C10	D9	D10
+18	Candida albicans	C11	C12	D11	D12
+19	Candida glabrata	C13	C14	D13	D14
+20	Candida parapsilosis	C15	C16	D15	D16
+21	Capnocytophaga ochracea	C17	C18	D17	D18
+22	Capnocytophaga sputigena	C19	C20	D19	D20
+23	Chlamydia trachomatis	C21	C22	D21	D22
+24	Clostridium sordellii	C23	C24	D23	D24
+25	Corynebacterium aurimucosum	E1	E2	F1	F2
+26	Dialister pneumosintes	E3	E4	F3	F4
+27	Eggerthella sinensis	E5	E6	F5	F6
+28	Eikenella corrodens	E7	E8	F7	F8
+29	Enterobacter aerogenes	E9	E10	F9	F10
+30	Enterococcus faecalis	E11	E12	F11	F12
+31	Finegoldia magna	E13	E14	F13	F14
+32	Fusobacterium nucleatum	E15	E16	F15	F16
+33	Fusobacterium periodonticum	E17	E18	F17	F18
+34	Gardnerella vaginalis	E19	E20	F19	F20
+35	Haemophilus ducreyi	E21	E22	F21	F22
+36	Haemophilus influenzae	E23	E24	F23	F24
+37	Klebsiella granulomatis	G1	G2	H1	H2
+38	Klebsiella pneumoniae	G3	G4	H3	H4
+39	Lactobacillus acidophilus	G5	G6	H5	H6
+40	Lactobacillus crispatus	G7	G8	H7	H8
+41	Lactobacillus gasseri	G9	G10	H9	H10
+42	Lactobacillus iners	G11	G12	H11	H12
+43	Lactobacillus jensenii	G13	G14	H13	H14
+44	Lactobacillus reuteri	G15	G16	H15	H16
+45	Lactobacillus salivarius	G17	G18	H17	H18
+46	Lactobacillus vaginalis	G19	G20	H19	H20
+47	Leptotrichia amnionii (Sneathia)	G21	G22	H21	H22
+48	Mobiluncus curtisii	G23	G24	H23	H24
+49	Mobiluncus mulieris	I1	I2	J1	J2
+50	Morganella morganii	I3	I4	J3	J4
+51	Mycoplasma genitalium	I5	I6	J5	J6
+52	Mycoplasma hominis	I7	I8	J7	J8
+53	Neisseria gonorrhoeae	I9	I10	J9	J10
+54	Parvimonas micra	I11	I12	J11	J12
+55	Peptoniphilus asaccharolyticus	I13	I14	J13	J14
+56	Peptostreptococcus anaerobius	I15	I16	J15	J16
+57	Porphyromonas asaccharolytica	I17	I18	J17	J18
+58	Prevotella bivia	I19	I20	J19	J20
+59	Prevotella disiens	I21	I22	J21	J22
+60	Prevotella intermedia	I23	I24	J23	J24
+61	Prevotella melaninogenica	K1	K2	L1	L2
+62	Prevotella nigrescens	K3	K4	L3	L4
+63	Propionibacterium acnes	K5	K6	L5	L6
+64	Pseudomonas aeruginosa	K7	K8	L7	L8
+65	Selenomonas noxia	K9	K10	L9	L10
+66	Sneathia sanguinegens	K11	K12	L11	L12
+67	Staphylococcus aureus	K13	K14	L13	L14
+68	Staphylococcus epidermidis	K15	K16	L15	L16
+69	Staphylococcus saprophyticus	K17	K18	L17	L18
+70	Streptococcus agalactiae	K19	K20	L19	L20
+71	Streptococcus anginosus	K21	K22	L21	L22
+72	Streptococcus constellatus/Streptococcus intermedius	K23	K24	L23	L24
+73	Streptococcus mitis	M1	M2	N1	N2
+74	Streptococcus salivarius	M3	M4	N3	N4
+75	Tannerella forsythia	M5	M6	N5	N6
+76	Treponema denticola	M7	M8	N7	N8
+77	Treponema pallidum	M9	M10	N9	N10
+78	Treponema socranskii	M11	M12	N11	N12
+79	Trichomonas vaginalis	M13	M14	N13	N14
+80	Ureaplasma parvum	M15	M16	N15	N16
+81	Ureaplasma urealyticum	M17	M18	N17	N18
+82	Varibaculum cambriense	M19	M20	N19	N20
+83	Veillonella atypica	M21	M22	N21	N22
+84	Veillonella parvula	M23	M24	N23	N24
+85	Pan Aspergillus/Candida_A	O1	O2	P1	P2
+86	Pan Aspergillus/Candida_B	O3	O4	P3	P4
+87	Pan Bacteria 1A	O5	O6	P5	P6
+88	Pan Bacteria 1B	O7	O8	P7	P8
+89	Pan Bacteria 2A	O9	O10	P9	P10
+90	Pan Bacteria 2B	O11	O12	P11	P12
+91	Hs/MmGAPDH_A	O13	O14	P13	P14
+92	Hs/MmGAPDH_B	O15	O16	P15	P16
+93	Hs/Mm HBB_A	O17	O18	P17	P18
+94	Hs/Mm HBB_B	O19	O20	P19	P20
+95	PPC_A	O21	O22	P21	P22
+96	PPC_B	O23	O24	P23	P24
