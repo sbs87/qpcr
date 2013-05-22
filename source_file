@@ -1,0 +1,4 @@
+mapping_file	/Users/stevensmith/bin/qpcr/Species_to_384_96_well_mapping_file	dummy
+control_map	/Users/stevensmith/bin/qpcr/control_mapping	dummy
+control_rep	/Users/stevensmith/bin/qpcr/control_rep_mapping	dummy
+ct_thres_mapping	/Users/stevensmith/bin/ct_thres_mapping	dummy
