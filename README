@@ -10,4 +10,19 @@ I plan to copy scripts that copy files from flash drive onto local systems
 make a script that maps the Ct vals from certain output files to the 384-96 well format
 Then, performs downsteam analysis. 
 
-Last updated 5/6/13 at 1:18
+On 5/22 created a script that accomplishes several things:
+1. Maps 384 configuration from qBio plate to corresponding quadruplicate model in 96 well
+2. Calcualtes mean and stdev for each species/control
+3. Propmts user which wells were manually filled or which should be removed as a result of visual outliers (based on boxplot)
+4. Saves 3 file: 96 well mapped ct vals, controls only vals, and boxplot.
+
+Future updates:
+1. OUtput mapped files and plot in real time so that wells can be entered while looking at plots. Reopen files as needed (multithreading)
+2. Output species-level quanitifcation
+3. Save a trail of iterative updates, especially boxplot, to track removal and resulitng files (currently need to do this by hand)
+4. Make prototocl
+5. Document/comment
+6. Clean up script to make easier to read and more efficent (i.e., generalize mapping, take out "dummy" component)
+
+
+Last updated 5/22/13 at 14:19
