@@ -142,14 +142,14 @@ def read_ct_thres(file_name):
         mapping.update({control:{"low":float(low),"high":float(high),"std":1}})
     return mapping
 
-def QC_call(control,mean, stdev,threshold):
+def QC_call(control,mean, stdev,threshold,qc_score_code):
     mean_cal=1*(mean>threshold[control]["low"]) + 2*(mean<threshold[control]["high"])
     stdev_call=4*(stdev<threshold[control]["std"])
-    score_to_text,dummy=read_control_mapping("/Users/stevensmith/bin/qpcr/qc_score_code")
+    score_to_text,dummy=read_control_mapping(qc_score_code)
     call=score_to_text[str(mean_cal+stdev_call)]
     return call
 
-def output_QC(well_96,order, outfile,flagged,threshold):
+def output_QC(well_96,order, outfile,flagged,threshold,qc_score_code):
     o=open(outfile,'w')
     o.write("Control\tRep1\tRep2\tRep3\tRep4\tRep5\tRep6\tRep7\tRep8\tMean\tSTDev\tQC_Call\n")
     for num in sorted(order):
@@ -157,11 +157,11 @@ def output_QC(well_96,order, outfile,flagged,threshold):
         o.write(control)
         mean=well_96[control]["stats"][0]
         stdev=well_96[control]["stats"][1]
-        call=QC_call(control,mean,stdev,threshold)
+        call=QC_call(control,mean,stdev,threshold,qc_score_code)
         for ct in well_96[control]["cts"]:
             o.write("\t"+ct)
         o.write("\t"+str(mean)+"\t"+str(stdev)+"\t"+call+"\n")
-    o.write("Ct vals marked with an X (ommited due to non ideal dRn plot) or # (removed as visual outlier)\nare NOT included in mean or standard deviation calculation. Ct vals with * were manually filled.\n")
+    o.write("Ct vals marked with an X (ommited due to non ideal dRn plot) or # (removed as visual outlier) are NOT included in mean or standard\ndeviation calculation. Ct vals with * were manually filled.\n")
     o.write("Removed wells:\n")
     for flag in flagged:
         o.write(flag+":\n")
@@ -178,6 +178,7 @@ def generate_plot(well_96,filename):
         for ct in cts_str:
             cts.append(float(ct))
         data.append(cts)
+    figure()
     matplotlib.rcParams.update({'font.size': 8})
     box=boxplot(data)
     title(filename)
@@ -187,7 +188,7 @@ def generate_plot(well_96,filename):
     savefig(filename)
 
 #Variables
-source_vars,order=read_control_mapping("/Users/stevensmith/bin/qpcr/source_file")
+source_vars,order=read_control_mapping(sys.argv[5])
 mapping_file=source_vars["mapping_file"] #Location of 384-96 well mapping file
 results_file=sys.argv[1] #Results file name
 outfile=sys.argv[2] #Output file name
@@ -203,6 +204,7 @@ man_fill_wells=raw_input("Enter manually filled wells:") #As for manually filled
 other=raw_input("Enter additional wells to be removed BEFORE QC:") #Ask for any other filled wells
 other_wells.append(other)
 threshold=read_ct_thres(source_vars["ct_thres_mapping"])
+qc_score_code=source_vars["qc_score_code"]
 
 flags=True #Initialize the flags var
 while(flags): #Read in flags until no more are defined
@@ -210,7 +212,7 @@ while(flags): #Read in flags until no more are defined
     well_96, control=map_and_stat(mapped_wells,well_species_map,order,control_map) #map these wells to their 96 well counterpart and calcualte mean and stdev
     output_96(well_96,order,outfile) #output the resulting mapping and statistics to perform visual QC
     flagged_wells={"manual":man_fill_wells,"other":other_wells,"omit":omit_wells} #Keep a list of flagged wells for later
-    output_QC(control,control_order,outfile_control,flagged_wells,threshold)  #Also output the QC for the control wells (a different function)
+    output_QC(control,control_order,outfile_control,flagged_wells,threshold,qc_score_code)  #Also output the QC for the control wells (a different function)
     generate_plot(control,plotfile) #Generate a box plot of the control wells to visualize outliers
     
     wells=raw_input("Enter additional wells to be removed:") #After viewing outliers and things that don't seem right, enter additional wells to be removed
