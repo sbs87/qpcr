@@ -16,13 +16,18 @@ On 5/22 created a script that accomplishes several things:
 3. Propmts user which wells were manually filled or which should be removed as a result of visual outliers (based on boxplot)
 4. Saves 3 file: 96 well mapped ct vals, controls only vals, and boxplot.
 
+Around 5/24 I created an SOP #6, rev 2 that utilizes the mapper.sh script to map and QC wells.
+
+On 5/25 I added some more features and created a quantification script that computes the dCt values of each species, modeled after the Excel workbook provided by QIAGEN
+
 Future updates:
 1. OUtput mapped files and plot in real time so that wells can be entered while looking at plots. Reopen files as needed (multithreading)
 2. Output species-level quanitifcation
 3. Save a trail of iterative updates, especially boxplot, to track removal and resulitng files (currently need to do this by hand)
-4. Make prototocl
+4. Modify prototocl to include quantification
 5. Document/comment
 6. Clean up script to make easier to read and more efficent (i.e., generalize mapping, take out "dummy" component)
-
-
-Last updated 5/22/13 at 14:19
+7. Add features to quant script that allow user to select one or both of each bacterial load or human reference genes. I noticed that the mean vals of each are fairly distinct, and avegerging these together is prob not idea, although this is how it was done in QIAGEN excel workbook
+8. Add feature to select for Ct values that pass a certain stdev (in addition to 35/33 ct threshold)
+9. Add replciate plots (correlation b/w this and 16S/metagenome/and even within qPCR)
+Last updated 5/25/13 at 16:14
