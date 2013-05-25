@@ -58,7 +58,7 @@ for control in ["bacterial","human"]:
         out=bacterial_out
     elif(control=="human"):
         out=human_out
-    out.write("Species\tdCt\tPresent\n")
+    out.write(control+"\nSpecies\tdCt\tPresent\n")
     for species in sorted(ddCt):#,key=lambda dCtval: dCtval[1]):
         out.write(species+"\t"+str(ddCt[species])+"\t"+str(ddCt[species]!="NP")+"\n")
 human_out.close()
