@@ -28,4 +28,12 @@ def unique(vals):
         if val not in seen:
             seen.append(val)
     return(seen)
-            
+
+#Def for reading files, general. Reads filename into vector. Still need to figure out header issue
+def readfile(file_name):
+    f=open(file_name)
+    lines = f.readlines()
+    headers = lines[0].rstrip().split("\t")
+    vectors = [line.rstrip().split("\t") for line in lines]
+    f.close()
+    return(vectors) #Returns entire file contents as series of vectors
