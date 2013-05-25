@@ -6,11 +6,11 @@ INFILE=$1 #may want to redefine so that all you have to input WXDY and MMDDYY
 OUTFILE=`echo $INFILE | sed 's/\.sdm-Result_Data\.txt/_mappedCtVals.xls/g' `
 OUTFILE_CONTROL=`echo $INFILE | sed 's/\.sdm-Result_Data\.txt/_mappedCtVals_QC.xls/g' `
 PLOTFILE=`echo $INFILE | sed 's/\.sdm-Result_Data\.txt/_QCplot/g' `
-SOURCEFILE="/Users/stsmith/bin/qpcr/source_file"
+SOURCEFILE="/Users/stevensmith/bin/qpcr/source_file"
 #cut appropriate fields from results file
 awk '{print $3 "\t" $7" \t" $10}' $INFILE | sed -n 10,394p > temp_formatted_results
 
-python /Users/stsmith/bin/qpcr/qBio_Map_QC_Quant.py temp_formatted_results $OUTFILE $OUTFILE_CONTROL $PLOTFILE $SOURCEFILE
+python /Users/stevensmith/bin/qpcr/qBio_Map_QC_Quant.py temp_formatted_results $OUTFILE $OUTFILE_CONTROL $PLOTFILE $SOURCEFILE
 
 #Open results files
 open $OUTFILE
