@@ -1,5 +1,6 @@
 import bmath
 import sys
+from pylab import *
 
 def read_ct(names,list):
     map={}
@@ -15,6 +16,31 @@ def generate_control_means(Ct_controls):
     control_means["bacterial"]=bmath.calc_mean([Ct_controls["Pan Bacteria 1"],Ct_controls["Pan Bacteria 2"]])
     control_means["human"]=bmath.calc_mean([Ct_controls["Hs/MmGAPDH"],Ct_controls["Hs/Mm HBB"]])
     return control_means
+def create_xy(cts,rel_abundance, intersect):
+    xy=[[],[]]
+    for species in intersect:
+        if ((cts[species]=="")|(cts[species]=="NP")):
+            next
+        else:
+            xy[0].append(cts[species])
+            xy[1].append(rel_abundance[species])
+    return xy
+def plot_experiments(xy):
+    scatter(xy[0],xy[1])
+    xlabel('qpcr')
+    ylabel('16S')
+    title('Method Comparison- qPCR vs 16S')
+    grid(True)
+    #savefig("test.png")
+    show()
+def read_HT_method(filename):
+    file=bmath.readfile(filename)
+    mapping={}
+    for line in file:
+        species=line[0]
+        abundance=line[1]
+        mapping.update({species:abundance})
+    return mapping
 
 data_filename=sys.argv[1]
 thres_filename=sys.argv[2]
@@ -61,6 +87,13 @@ for control in ["bacterial","human"]:
     out.write(control+"\nSpecies\tdCt\tPresent\n")
     for species in sorted(ddCt):#,key=lambda dCtval: dCtval[1]):
         out.write(species+"\t"+str(ddCt[species])+"\t"+str(ddCt[species]!="NP")+"\n")
+    cts=ddCt
+    ra=read_HT_method("/Users/stevensmith/Desktop/16s")
+    intersect=set(cts.keys())&set(ra.keys())
+    print ra
+    xy=create_xy(cts,ra,intersect)
+    plot_experiments(xy)
+    
 human_out.close()
 bacterial_out.close()
 #Calculate correlation with 16S/metadata.Plot 

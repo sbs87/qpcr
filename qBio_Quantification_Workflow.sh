@@ -9,6 +9,7 @@ OUTFILE_QUANT_BAC=`echo $INFILE | sed 's/\.sdm-Result_Data\.txt/_BacterialLoadQu
 OUTFILE_QUANT_HUM=`echo $INFILE | sed 's/\.sdm-Result_Data\.txt/_HumanQuantified.xls/g' `
 PLOTFILE=`echo $INFILE | sed 's/\.sdm-Result_Data\.txt/_QCplot/g' `
 SOURCEFILE="/Users/$ROOT/bin/qpcr/source_file"
+
 #cut appropriate fields from results file
 awk '{print $3 "\t" $7" \t" $10}' $INFILE | sed -n 10,394p > temp_formatted_results
 
