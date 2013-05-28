@@ -27,7 +27,7 @@ def read_384(well_species_map,file_name,man_fill_wells,other_wells,controls,cont
             flag_omit=""
         elif flag_omit=="true":
             flag_omit="X"
-            ommitted.append(ct)
+            ommitted.append(well)
         flag_man=""
         if well in man_fill_wells:
             flag_man="*"
@@ -199,10 +199,11 @@ control_rep,dummy=read_control_mapping(source_vars["control_rep"]) #This file re
 
 well_species_map,order=read_well_species_map(mapping_file) #This maps the 384 wells to each species as well as retains thier order
 man_fill_wells=[] #A list of manually filled wells
-other_wells=[] #A list of wells with "other", usually outliers
 man_fill_wells=raw_input("Enter manually filled wells:") #As for manually filled wells
-other=raw_input("Enter additional wells to be removed BEFORE QC:") #Ask for any other filled wells
-other_wells.append(other)
+
+other_wells=raw_input("Enter additional wells to be removed BEFORE QC:") #Ask for any other filled wells
+other_wells=other_wells.split(",")
+
 threshold=read_ct_thres(source_vars["ct_thres_mapping"])
 qc_score_code=source_vars["qc_score_code"]
 
@@ -214,7 +215,6 @@ while(flags): #Read in flags until no more are defined
     flagged_wells={"manual":man_fill_wells,"other":other_wells,"omit":omit_wells} #Keep a list of flagged wells for later
     output_QC(control,control_order,outfile_control,flagged_wells,threshold,qc_score_code)  #Also output the QC for the control wells (a different function)
     generate_plot(control,plotfile) #Generate a box plot of the control wells to visualize outliers
-    
     wells=raw_input("Enter additional wells to be removed:") #After viewing outliers and things that don't seem right, enter additional wells to be removed
     if (wells=="" or wells=="done"): #If no wells were entered or done was entered, exit loop and output final fils
         print "Removed wells:"
@@ -223,5 +223,8 @@ while(flags): #Read in flags until no more are defined
         print man_fill_wells
         flags=False
     else:
-        other_wells.append(wells) #Otherwise, keep adding flags/wells to be removed
+    	wells=wells.split(",")
+    	for well in wells:
+    		other_wells.append(well)
+        #Otherwise, keep adding flags/wells to be removed
 

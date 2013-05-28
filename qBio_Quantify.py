@@ -88,7 +88,7 @@ for control in ["bacterial","human"]:
     for species in sorted(ddCt):#,key=lambda dCtval: dCtval[1]):
         out.write(species+"\t"+str(ddCt[species])+"\t"+str(ddCt[species]!="NP")+"\n")
     cts=ddCt
-    ra=read_HT_method("/Users/stevensmith/Desktop/16s")
+    ra=read_HT_method("/Users/stsmith/Desktop/16s")
     intersect=set(cts.keys())&set(ra.keys())
     print ra
     xy=create_xy(cts,ra,intersect)
