@@ -47,7 +47,18 @@ def read_HT_method(filename):
         abundance=line[1]
         mapping.update({species:abundance})
     return mapping
-    
+
+def agreement_table(dCts,ra, intersect):
+	agreement={}
+	for species in intersect:
+		val_qpcr=dCts[species]
+		val_ht=ra[species]
+		val_qpcr_bool=val_qpcr!="NP"
+		val_ht_bool=float(val_ht)>0
+		category=1*val_qpcr_bool+2*val_ht_bool
+		agreement.update({species:{"qpcr":val_qpcr,"ht":val_ht,"agree_cat":category}})
+		#print (species+"\t"+str(val_qpcr)+"\t"+str(val_ht)+"\t"+str(category))
+	return agreement#,summary_table #Species val16 valq category. Seprate, formatted tablle
 
 data_filename=sys.argv[1]
 thres_filename=sys.argv[2]
@@ -89,6 +100,11 @@ bacterial_out=open(bacterial_outfile,'w')
 human_out=open(human_outfile,'w')
 control_list.append("bacterial")
 control_list.append("human")
+#agreement_out=open("agreement_out",'w')
+outstreams={}
+for control in control_list:
+	outstreams.update({control:{"agree":open("agreement_out",'w')}})
+#outstream={"Pan Bacteria 1":{"quant":bacterial1_out,"agree":open("agreement_out",'w')}}    
 
 #Calc Ctthres-Ct controk for given species, taking into account constraints/threshold cutoffs
 for control in control_list:
@@ -123,6 +139,10 @@ for control in control_list:
         out.write(species+"\t"+str(ddCt[species])+"\t"+str(ddCt[species]!="NP")+"\n")
     ra=read_HT_method(rRNA16s_filename)
     xy=create_xy(ddCt,ra,set(ddCt.keys())&set(ra.keys()))
+    agreement=agreement_table(ddCt,ra,set(ddCt.keys())&set(ra.keys()))
+    blah=outstream["Pan Bacteria 1"]["agree"]
+    for species in agreement:
+    	blah.write(species+"\t"+str(agreement[species]["qpcr"])+"\t"+str(agreement[species]["ht"])+"\t"+str(agreement[species]["agree_cat"])+"\n")
     #plot_experiments(xy)
     
 bacterial1_out.close()

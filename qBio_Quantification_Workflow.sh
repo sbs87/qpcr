@@ -27,7 +27,6 @@ cut -f1,6,7 $OUTFILE | sed -n 2,85p > temp_sampleCt
 cut -f1,10,11 $OUTFILE_CONTROL | sed -n 2,7p > temp_controlCt
 cat temp_sampleCt temp_controlCt > temp_quant_input
 
-
 python /Users/$ROOT_LOCAL/bin/qpcr/qBio_Quantify.py temp_quant_input "/Users/$ROOT_LOCAL/bin/qpcr/dCt_threshold" $OUTFILE_QUANT $HT_FILE
 
 #Clean up
