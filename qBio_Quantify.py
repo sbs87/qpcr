@@ -48,27 +48,33 @@ def read_HT_method(filename):
         mapping.update({species:abundance})
     return mapping
 
-def agreement_table(dCts,ra, intersect):
+def agreement_table(dCts,ra, intersect,control):
 	agreement={}
+	cat1=0
+	cat2=0
+	cat3=0
+	cat0=0
 	for species in intersect:
 		val_qpcr=dCts[species]
 		val_ht=ra[species]
 		val_qpcr_bool=val_qpcr!="NP"
-		val_ht_bool=float(val_ht)>0
+		val_ht_bool=float(val_ht)>1
 		category=1*val_qpcr_bool+2*val_ht_bool
 		agreement.update({species:{"qpcr":val_qpcr,"ht":val_ht,"agree_cat":category}})
-		#print (species+"\t"+str(val_qpcr)+"\t"+str(val_ht)+"\t"+str(category))
-	return agreement#,summary_table #Species val16 valq category. Seprate, formatted tablle
+		if(category==0):
+		    cat0=cat0+1
+		elif(category==1):
+		    cat1=cat1+1
+		elif(category==2):
+		    cat2=cat2+1
+		elif(category==3):
+		    cat3=cat3+1
+	summary_table=str(control+"\t\tqpcr\tqpcr\n\t\t+\t-\n16s\t+\t"+str(cat3)+"\t"+str(cat2)+"\n16s\t-\t"+str(cat1)+"\t"+str(cat0))
+	return agreement,summary_table #Species val16 valq category. Seprate, formatted tablle
 
 data_filename=sys.argv[1]
 thres_filename=sys.argv[2]
-quant_outfile=sys.argv[3]
-bacteria1_outfile=str(quant_outfile+"bacteria1")
-bacteria2_outfile=str(quant_outfile+"bacteria2")
-humanHBB_outfile=str(quant_outfile+"humanHBB")
-humanGAPDH_outfile=str(quant_outfile+"humanGAPDH")
-bacterial_outfile=str(quant_outfile+"bacterial")
-human_outfile=str(quant_outfile+"human")
+outfile_prefix=sys.argv[3]
 rRNA16s_filename=sys.argv[4]
 
 data_file=bmath.readfile(data_filename)
@@ -92,24 +98,29 @@ Ct_controls_combined=generate_control_means(Ct_controls)
 Ct_controls.update(Ct_controls_combined)
 Ct_thresholds=read_ct(thres_file,sample_list)
 
-bacterial1_out=open(bacteria1_outfile,'w')
-bacterial2_out=open(bacteria2_outfile,'w')
-humanHBB_out=open(humanHBB_outfile,'w')
-humanGAPDH_out=open(humanGAPDH_outfile,'w')
-bacterial_out=open(bacterial_outfile,'w')
-human_out=open(human_outfile,'w')
 control_list.append("bacterial")
 control_list.append("human")
-#agreement_out=open("agreement_out",'w')
+
 outstreams={}
 for control in control_list:
-	outstreams.update({control:{"agree":open("agreement_out",'w')}})
-#outstream={"Pan Bacteria 1":{"quant":bacterial1_out,"agree":open("agreement_out",'w')}}    
+    if(control=="Hs/MmGAPDH"):
+        control_fn="Hs_MmGAPDH"
+    elif(control=="Hs/Mm HBB"):
+        control_fn="Hs_MmHBB"
+    else:
+        control_fn=control
+    outstreams.update({control:{"quant":open(str(outfile_prefix+"_quantified_"+control_fn),'w'),"agree":open(str(outfile_prefix+"_HTagreement_"+control_fn),'w'),"agree_sum":open(str(outfile_prefix+"_HTagreementSum_"+control_fn),'w')}})
+
+ra=read_HT_method(rRNA16s_filename)  
+intersect=set(Ct_species.keys())&set(ra.keys())
+inter=open(str(outfile_prefix+"_agreementSpeciesSet"),'w')
+inter.write(str(intersect))
+inter.close()
 
 #Calc Ctthres-Ct controk for given species, taking into account constraints/threshold cutoffs
 for control in control_list:
     ddCt={}
-    Ct_control=Ct_controls[control][0]#FIX.. i.e., include a bacterial and human control like before... add this to the list of controls and possible write streams
+    Ct_control=Ct_controls[control][0]
     for species in Ct_species:
         dCt=Ct_species[species][0]-Ct_control
         dCt_cutoff=Ct_thresholds[species][0]-Ct_control
@@ -122,35 +133,17 @@ for control in control_list:
         else:
             ddCt[species]="NP"
     #Output ranking, relative abundance, and whether species is "there" (binary)
-    if(control=="Pan Bacteria 1"):
-        out=bacterial1_out
-    elif(control=="Pan Bacteria 2"):
-        out=bacterial2_out
-    elif(control=="Hs/MmGAPDH"):
-        out=humanGAPDH_out
-    elif(control=="Hs/Mm HBB"):
-    	out=humanHBB_out
-    elif(control=="bacterial"):
-    	out=bacterial_out
-    elif(control=="human"):
-    	out=human_out
-    out.write(control+"\nSpecies\tdCt\tPresent\n")
+    outstreams[control]["quant"].write(control+"\n")
     for species in sorted(ddCt):#,key=lambda dCtval: dCtval[1]):
-        out.write(species+"\t"+str(ddCt[species])+"\t"+str(ddCt[species]!="NP")+"\n")
-    ra=read_HT_method(rRNA16s_filename)
-    xy=create_xy(ddCt,ra,set(ddCt.keys())&set(ra.keys()))
-    agreement=agreement_table(ddCt,ra,set(ddCt.keys())&set(ra.keys()))
-    blah=outstream["Pan Bacteria 1"]["agree"]
-    for species in agreement:
-    	blah.write(species+"\t"+str(agreement[species]["qpcr"])+"\t"+str(agreement[species]["ht"])+"\t"+str(agreement[species]["agree_cat"])+"\n")
+        outstreams[control]["quant"].write(species+"\t"+str(ddCt[species])+"\t"+str(ddCt[species]!="NP")+"\n")
+    agreement,agreement_sum=agreement_table(ddCt,ra,intersect,control)
+    for species in sorted(agreement):
+        outstreams[control]["agree"].write(species+"\t"+str(agreement[species]["qpcr"])+"\t"+str(agreement[species]["ht"])+"\t"+str(agreement[species]["agree_cat"])+"\n")
+    outstreams[control]["agree_sum"].write(agreement_sum)
+    outstreams[control]["agree"].close()
+    outstreams[control]["agree_sum"].close()
     #plot_experiments(xy)
-    
-bacterial1_out.close()
-bacterial2_out.close()
-humanHBB_out.close()
-humanGAPDH_out.close()
-human_out.close()
-bacterial_out.close()
+    #xy=create_xy(ddCt,ra,set(ddCt.keys())&set(ra.keys()))
 
 #Calculate correlation with 16S/metadata.Plot 
 
