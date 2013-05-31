@@ -48,7 +48,7 @@ def read_HT_method(filename):
         mapping.update({species:abundance})
     return mapping
 
-def agreement_table(dCts,ra, intersect,control):
+def agreement_table(dCts,ra, intersect,sample,ht_count_thres):
 	agreement={}
 	cat1=0
 	cat2=0
@@ -58,7 +58,7 @@ def agreement_table(dCts,ra, intersect,control):
 		val_qpcr=dCts[species]
 		val_ht=ra[species]
 		val_qpcr_bool=val_qpcr!="NP"
-		val_ht_bool=float(val_ht)>1
+		val_ht_bool=float(val_ht)>ht_count_thres
 		category=1*val_qpcr_bool+2*val_ht_bool
 		agreement.update({species:{"qpcr":val_qpcr,"ht":val_ht,"agree_cat":category}})
 		if(category==0):
@@ -69,7 +69,7 @@ def agreement_table(dCts,ra, intersect,control):
 		    cat2=cat2+1
 		elif(category==3):
 		    cat3=cat3+1
-	summary_table=str(control+"\t\tqpcr\tqpcr\n\t\t+\t-\n16s\t+\t"+str(cat3)+"\t"+str(cat2)+"\n16s\t-\t"+str(cat1)+"\t"+str(cat0))
+	summary_table=str("Agreement Summary Table for "+sample+"\t\tqpcr\tqpcr\n\t\t+\t-\n16s\t+\t"+str(cat3)+"\t"+str(cat2)+"\n16s\t-\t"+str(cat1)+"\t"+str(cat0))
 	return agreement,summary_table #Species val16 valq category. Seprate, formatted tablle
 
 data_filename=sys.argv[1]
@@ -97,6 +97,7 @@ Ct_controls=read_ct(data_file,control_list)
 Ct_controls_combined=generate_control_means(Ct_controls)
 Ct_controls.update(Ct_controls_combined)
 Ct_thresholds=read_ct(thres_file,sample_list)
+ht_count_thres=2
 
 control_list.append("bacterial")
 control_list.append("human")
@@ -109,8 +110,8 @@ for control in control_list:
         control_fn="Hs_MmHBB"
     else:
         control_fn=control
-    outstreams.update({control:{"quant":open(str(outfile_prefix+"_quantified_"+control_fn),'w'),"agree":open(str(outfile_prefix+"_HTagreement_"+control_fn),'w'),"agree_sum":open(str(outfile_prefix+"_HTagreementSum_"+control_fn),'w')}})
-
+    outstreams.update({control:{"quant":open(str("Quantification/"+outfile_prefix+"_quantified_"+control_fn),'w'),"agree":open(str("HT_Compare/"+outfile_prefix+"_HTagreement_"+control_fn),'w'),"agree_sum":""}})
+outstreams.update({"all":{"quant":"","agree":"","agree_sum":open(str("HT_Compare/"+outfile_prefix+"_HTagreementSum"),'w')}})
 ra=read_HT_method(rRNA16s_filename)  
 intersect=set(Ct_species.keys())&set(ra.keys())
 inter=open(str(outfile_prefix+"_agreementSpeciesSet"),'w')
@@ -133,15 +134,16 @@ for control in control_list:
         else:
             ddCt[species]="NP"
     #Output ranking, relative abundance, and whether species is "there" (binary)
-    outstreams[control]["quant"].write(control+"\n")
+    outstreams[control]["quant"].write(outfile_prefix+"\t"+outfile_prefix+"\t"+outfile_prefix+"\n"+control+"\t"+control+"\t"+control+"\n")
     for species in sorted(ddCt):#,key=lambda dCtval: dCtval[1]):
         outstreams[control]["quant"].write(species+"\t"+str(ddCt[species])+"\t"+str(ddCt[species]!="NP")+"\n")
-    agreement,agreement_sum=agreement_table(ddCt,ra,intersect,control)
+    agreement,agreement_sum=agreement_table(ddCt,ra,intersect,outfile_prefix,ht_count_thres)
+    outstreams[control]["agree"].write(outfile_prefix+"\t"+outfile_prefix+"\t"+outfile_prefix+"\t"+outfile_prefix+"\n"+control+"\t"+control+"\t"+rRNA16s_filename+"\t"+control+"\n")
     for species in sorted(agreement):
         outstreams[control]["agree"].write(species+"\t"+str(agreement[species]["qpcr"])+"\t"+str(agreement[species]["ht"])+"\t"+str(agreement[species]["agree_cat"])+"\n")
-    outstreams[control]["agree_sum"].write(agreement_sum)
     outstreams[control]["agree"].close()
-    outstreams[control]["agree_sum"].close()
+outstreams["all"]["agree_sum"].write(agreement_sum)
+outstreams["all"]["agree_sum"].close()
     #plot_experiments(xy)
     #xy=create_xy(ddCt,ra,set(ddCt.keys())&set(ra.keys()))
 

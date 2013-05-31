@@ -1,7 +1,7 @@
 #Get data off of flash drive, copy to local and ssh
 
 #Define the input and output files for result data (preformatted) 
-ROOT_LOCAL="stevensmith"
+ROOT_LOCAL="stsmith"
 INFILE=$1 #may want to redefine so that all you have to input WXDY and MMDDYY
 OUTFILE=`echo $INFILE | sed 's/\.sdm-Result_Data\.txt/_mappedCtVals/g' `
 OUTFILE_CONTROL=`echo $INFILE | sed 's/\.sdm-Result_Data\.txt/_mappedCtVals_QC/g' `
@@ -26,7 +26,8 @@ HT_FILE=$2
 cut -f1,6,7 $OUTFILE | sed -n 2,85p > temp_sampleCt
 cut -f1,10,11 $OUTFILE_CONTROL | sed -n 2,7p > temp_controlCt
 cat temp_sampleCt temp_controlCt > temp_quant_input
-
+mkdir HT_Compare
+mkdir Quantification
 python /Users/$ROOT_LOCAL/bin/qpcr/qBio_Quantify.py temp_quant_input "/Users/$ROOT_LOCAL/bin/qpcr/dCt_threshold" $OUTFILE_PRE $HT_FILE
 
 #Clean up
