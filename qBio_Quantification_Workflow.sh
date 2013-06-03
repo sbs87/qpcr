@@ -19,22 +19,22 @@ HT_FILE=$2
 #cp $OUTFILE "$OUTFILE.xls"
 #cp $OUTFILE_CONTROL "$OUTFILE_CONTROL.xls"
 #Open results files
-#open "$OUTFILE.xls"`
+#open "$OUTFILE.xls"
 #open "$OUTFILE_CONTROL.xls"
 #open "$PLOTFILE.png"
 
 cut -f1,6,7 $OUTFILE | sed -n 2,85p > temp_sampleCt
 cut -f1,10,11 $OUTFILE_CONTROL | sed -n 2,7p > temp_controlCt
-cat temp_sampleCt temp_controlCt > temp_quant_input
-mkdir HT_Compare
-mkdir Quantification
-python /Users/$ROOT_LOCAL/bin/qpcr/qBio_Quantify.py temp_quant_input "/Users/$ROOT_LOCAL/bin/qpcr/dCt_threshold" $OUTFILE_PRE $HT_FILE
+cat temp_sampleCt temp_controlCt > Ct_summary_input
+mkdir HT_Compare_meta
+mkdir Quantification_new
+python /Users/$ROOT_LOCAL/bin/qpcr/qBio_Quantify.py Ct_summary_input "/Users/$ROOT_LOCAL/bin/qpcr/dCt_threshold" $OUTFILE_PRE $HT_FILE
 
 #Clean up
 #rm temp_formatted_results
 rm temp_sampleCt
 rm temp_controlCt
-rm temp_quant_input
+
 #rm "$OUTFILE.xls"
 #rm "$OUTFILE_CONTROL.xls"
 

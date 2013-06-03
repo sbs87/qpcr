@@ -69,7 +69,7 @@ def agreement_table(dCts,ra, intersect,sample,ht_count_thres):
 		    cat2=cat2+1
 		elif(category==3):
 		    cat3=cat3+1
-	summary_table=str("Agreement Summary Table for "+sample+"\t\tqpcr\tqpcr\n\t\t+\t-\n16s\t+\t"+str(cat3)+"\t"+str(cat2)+"\n16s\t-\t"+str(cat1)+"\t"+str(cat0))
+	summary_table=str("Agreement Summary Table for "+sample+"\t\tqpcr\tqpcr\n\t\t+\t-\nmeta\t+\t"+str(cat3)+"\t"+str(cat2)+"\nmeta\t-\t"+str(cat1)+"\t"+str(cat0))
 	return agreement,summary_table #Species val16 valq category. Seprate, formatted tablle
 
 data_filename=sys.argv[1]
@@ -110,8 +110,8 @@ for control in control_list:
         control_fn="Hs_MmHBB"
     else:
         control_fn=control
-    outstreams.update({control:{"quant":open(str("Quantification/"+outfile_prefix+"_quantified_"+control_fn),'w'),"agree":open(str("HT_Compare/"+outfile_prefix+"_HTagreement_"+control_fn),'w'),"agree_sum":""}})
-outstreams.update({"all":{"quant":"","agree":"","agree_sum":open(str("HT_Compare/"+outfile_prefix+"_HTagreementSum"),'w')}})
+    outstreams.update({control:{"quant":open(str("Quantification_new/"+outfile_prefix+"_quantified_"+control_fn),'w'),"agree":open(str("HT_Compare/"+outfile_prefix+"_HTagreement_"+control_fn),'w'),"agree_sum":""}})
+outstreams.update({"all":{"quant":"","agree":"","agree_sum":open(str("HT_Compare_meta/"+outfile_prefix+"_HTagreementSum"),'w')}})
 ra=read_HT_method(rRNA16s_filename)  
 intersect=set(Ct_species.keys())&set(ra.keys())
 inter=open(str(outfile_prefix+"_agreementSpeciesSet"),'w')
