@@ -10,6 +10,7 @@ OUTFILE_PRE=`echo $INFILE | sed 's/\.sdm-Result_Data\.txt//g' `
 PLOTFILE=`echo $INFILE | sed 's/\.sdm-Result_Data\.txt/_QCplot/g' `
 SOURCEFILE="/Users/$ROOT_LOCAL/bin/qpcr/source_file"
 HT_FILE=$2
+HT_TYPE=$3
 
 #cut appropriate fields from results file
 #awk '{print $3 "\t" $7" \t" $10}' $INFILE | sed -n 10,394p > temp_formatted_results
@@ -26,16 +27,13 @@ HT_FILE=$2
 cut -f1,6,7 $OUTFILE | sed -n 2,85p > temp_sampleCt
 cut -f1,10,11 $OUTFILE_CONTROL | sed -n 2,7p > temp_controlCt
 cat temp_sampleCt temp_controlCt > Ct_summary_input
-mkdir HT_Compare_meta
-mkdir Quantification_new
-python /Users/$ROOT_LOCAL/bin/qpcr/qBio_Quantify.py Ct_summary_input "/Users/$ROOT_LOCAL/bin/qpcr/dCt_threshold" $OUTFILE_PRE $HT_FILE
+mkdir HT_Compare_$HT_TYPE #THIS IS NOT OMPTIMAL. CHANGE. 
+mkdir Quantification
+python /Users/$ROOT_LOCAL/bin/qpcr/qBio_Quantify.py Ct_summary_input "/Users/$ROOT_LOCAL/bin/qpcr/dCt_threshold" $OUTFILE_PRE $HT_FILE $HT_TYPE
 
 #Clean up
 #rm temp_formatted_results
 rm temp_sampleCt
 rm temp_controlCt
-
-#rm "$OUTFILE.xls"
-#rm "$OUTFILE_CONTROL.xls"
 
 
