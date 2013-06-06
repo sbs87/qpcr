@@ -115,6 +115,8 @@ sample_list=[]
 #-------Start main program
 #------------------
 
+#----Read in files, values 
+
 #Read in the sample list and it's correspond mean ct val and st dev (not used) (created by wrapper script by cat the vals generated from QC script)
 #This is the sample list, not the control list...
 for val in data_file:
@@ -126,56 +128,81 @@ for val in data_file:
         sample_list.append(sample)
 
 #Read in Ct mean vals for each species
-Ct_species=read_ct(data_file,sample_list) #Sample:ct_val
-Ct_controls=read_ct(data_file,control_list)
-Ct_controls_combined=generate_control_means(Ct_controls)
+Ct_species=read_ct(data_file,sample_list) #Assigns only samples (in sample list) their respective mean Ct val based on the data in data_file. Mapping is Sample:[mean ct_val, stdev]
+Ct_controls=read_ct(data_file,control_list) #Assings only controls (in control_list) their respective mean Ct val based on data in data file. Mapping is Control[mean ct val, stdev]
+Ct_controls_combined=generate_control_means(Ct_controls) #This takes control vals and cals mean for "bacterial" and "human" and updates the control hash
 Ct_controls.update(Ct_controls_combined)
-Ct_thresholds=read_ct(thres_file,sample_list)
-ht_count_thres=2
+Ct_thresholds=read_ct(thres_file,sample_list) #Reads in control Ct and stdev thresholds for later
+ht_count_thres=2 #Hardcoded assignment to ht_method cutoff.. CHANGE so that it is not hardcoded and changes depending on absolute counts vs relative abundance
 
-control_list.append("bacterial")
+control_list.append("bacterial") #Updates the control list accordlingly
 control_list.append("human")
+
+#Read in relative abundance file 
+ra=read_HT_method(rRNA16s_filename)
+
+#----Defines the output streams using hash. Multiple, dynamic output streams are defined based on iterative variables
 
 outstreams={}
 for control in control_list:
+    #The following if statements format the GAPDH and HBB output stream so they don'thave a slash in them (interpreted as a directory path in output stream)
     if(control=="Hs/MmGAPDH"):
         control_fn="Hs_MmGAPDH"
     elif(control=="Hs/Mm HBB"):
         control_fn="Hs_MmHBB"
     else:
         control_fn=control
+    #Hash for different output streams. These are defined by the outfilr prefix and the current control in forloop. os=quant:<quantification os>, agree:<agreement os>, "agree_sum" <empty>. The agree_sum key is updated after the for loop
     outstreams.update({control:{"quant":open(str("Quantification/"+outfile_prefix+"_quantified_"+control_fn),'w'),"agree":open(str("HT_Compare_"+HT_type+"/"+outfile_prefix+"_"+HT_type+"_HTagreement_"+control_fn),'w'),"agree_sum":""}})
+#Update only the agree_sum os to be formatted as containing the HT_method type (incorportates all controls)
 outstreams.update({"all":{"quant":"","agree":"","agree_sum":open(str("HT_Compare_"+HT_type+"/"+outfile_prefix+"_"+HT_type+"_HTagreementSum"),'w')}})
-ra=read_HT_method(rRNA16s_filename)  
+  
+#Define the set of species shared by the qPCR and HT_method for use in the "agreement" def. Also output this intersecting set to output. NOTE: THIS SHOULD CHANGE DEPENDING ON THE HT_method USED!!!
 intersect=set(Ct_species.keys())&set(ra.keys())
 inter=open(str(outfile_prefix+"_agreementSpeciesSet"),'w')
 inter.write(str(intersect))
 inter.close()
 
-#Calc Ctthres-Ct controk for given species, taking into account constraints/threshold cutoffs
+#-----Calulate dCt and output results
+
+#Calc Ctspec-Ct controk for given species, taking into account constraints/threshold cutoffs
+
 for control in control_list:
     ddCt={}
     Ct_control=Ct_controls[control][0]
     for species in Ct_species:
+        #Define dCt for the current species/control 
         dCt=Ct_species[species][0]-Ct_control
+        #Define cutoff val (note technically that the dCt doesn't have to be calculated, you can define cutoffs before calc dCt
         dCt_cutoff=Ct_thresholds[species][0]-Ct_control
+        #There is not stdev cutoff for bacterial or human.... so set to true. Otherwise, figue out if Ct passes stdev cutoff (in addition to Ct cutoff as well)
         if Ct_species[species][1] in ["bacterial","human"]:
         	stdev_pass=True
         else:
         	stdev_pass=Ct_species[species][1]<=Ct_thresholds[species][1]
+        #If the species' Ct and stdev pass, then assign the "ddCt" (CHANGE THIS IS NOT ddCt!) to current species. Otherwise, assign a "NP" (not present)
         if((dCt<dCt_cutoff)&(stdev_pass)):
             ddCt[species]=dCt
         else:
             ddCt[species]="NP"
-    #Output ranking, relative abundance, and whether species is "there" (binary)
+    #Output results
+    
+    #--Quantification output stream
     outstreams[control]["quant"].write(outfile_prefix+"\t"+outfile_prefix+"\t"+outfile_prefix+"\n"+control+"\t"+control+"\t"+control+"\n")
     for species in sorted(ddCt):#,key=lambda dCtval: dCtval[1]):
         outstreams[control]["quant"].write(species+"\t"+str(ddCt[species])+"\t"+str(ddCt[species]!="NP")+"\n")
+    
+    #---Agreement output stream
+    #Generate agreement formatted outstreams using agreement_table function
     agreement,agreement_sum=agreement_table(ddCt,ra,intersect,outfile_prefix,ht_count_thres)
+    #Begin writing to output stream agree (header)
     outstreams[control]["agree"].write(outfile_prefix+"\t"+outfile_prefix+"\t"+outfile_prefix+"\t"+outfile_prefix+"\n"+control+"\t"+control+"\t"+rRNA16s_filename+"\t"+control+"\n")
+    #Formatted as species \t qpcr val \t ht val \t category
     for species in sorted(agreement):
         outstreams[control]["agree"].write(species+"\t"+str(agreement[species]["qpcr"])+"\t"+str(agreement[species]["ht"])+"\t"+str(agreement[species]["agree_cat"])+"\n")
     outstreams[control]["agree"].close()
+#Output the agreement summary table
 outstreams["all"]["agree_sum"].write(agreement_sum)
 outstreams["all"]["agree_sum"].close()
 
+#----END OF SCRIPT------
