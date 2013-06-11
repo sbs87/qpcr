@@ -13,10 +13,14 @@
 STUDY_DIR=$1 #The directory folder, MMDDYY
 FLASH_DIR="/Volumes/IGS_STEVE/ABS_7900HT/$STUDY_DIR"
 LOCAL_DIR="/Users/stsmith/Documents/Results/qPCR/"
+SSH_DIR="/diag/cloud/stsmith/results/qpcr"
 
 #Copy files
 echo "Copying $FLASH_DIR to $LOCAL_DIR ..."
 cp -r $FLASH_DIR $LOCAL_DIR
 echo "complete!"
+echo "Steve, here is the command needed for sftp....don't forget to do that"
+echo "sftp $SOM"
+echo "cp -r $FLASH_DIR $SSH_DIR"
 
 #-----END OF SCRIPT-----
