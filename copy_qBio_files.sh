@@ -20,7 +20,8 @@ echo "Copying $FLASH_DIR to $LOCAL_DIR ..."
 cp -r $FLASH_DIR $LOCAL_DIR
 echo "complete!"
 echo "Steve, here is the command needed for sftp....don't forget to do that"
-echo "sftp $SOM"
-echo "cp -r $FLASH_DIR $SSH_DIR"
+echo "sftp SOM\n"
+echo "mkdir $SSH_DIR/$STUDY_DIR \n"
+echo "put -r $FLASH_DIR $SSH_DIR"
 
 #-----END OF SCRIPT-----
