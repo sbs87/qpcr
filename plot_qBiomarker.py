@@ -1,4 +1,4 @@
-import bmath
+import cutsom_utilities
 import sys
 from pylab import *
 import numpy as np
@@ -6,11 +6,9 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import color_maps as cmc
 
-file= bmath.readfile("qPCR_dCt_alltimes")
+file= cutsom_utilities.readfile("qPCR_dCt_alltimes")
 
 cmap3=cmc.discrete_cmap(4)
-#cmc.show_cmaps(['indexed','Blues','OrRd','PiYG','PuOr','RdYlBu','RdYlGn','afmhot','binary','copper','gist_ncar','gist_rainbow','own1','own2'])
-#cmc.show_cmaps(['indexed'])
 
 def read_agreement():
 	dates=file[0][1:]#Cols
@@ -56,3 +54,13 @@ def format_coord(x, y):
 
 ax.format_coord = format_coord
 plt.show()
+
+
+
+#--------------------------------------------------------------
+Y=([1,20,21],[40,3,8])
+#Species1[Method1,Method2]
+print Y
+plot(Y)
+
+show()
