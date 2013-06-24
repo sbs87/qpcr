@@ -23,6 +23,7 @@ PLOTFILE=`echo $INFILE | sed 's/\.sdm-Result_Data\.txt/_QCplot/g' ` #File name t
 SOURCEFILE="/Users/$ROOT_LOCAL/bin/qpcr/source_file" #Pointer to local variable files to use used in scripts later
 HT_FILE=$2 #File to 16s or metagenomic data. inthe form species \t value (counts or rel abund)
 HT_TYPE=$3 #Either 16s or meta. Defines output stream variables (directory and file names)
+HT_CUTOFF=$4 #Cutoff for count or metagenomic calls (present/absent_
 
 #cut appropriate fields from results file, corresponding to well #, Ct val, and t/f hidden from Rn plot
 awk '{print $3 "\t" $7" \t" $10}' $INFILE | sed -n 10,394p > temp_formatted_results
@@ -50,7 +51,7 @@ open "$PLOTFILE.png"
 #mkdir Quantification
 
 #----Run quant script. Takes the Ct mean/stdev formatted file as input, along with hardcoded threshold vals, the outut file formatted, and HT file info. HT_FILE is pointer to 16s or metagenomic data. HT_TYPE is either 16s or meta. Read from command line
-#python /Users/$ROOT_LOCAL/bin/qpcr/qBio_Quantify.py Ct_summary_input "/Users/$ROOT_LOCAL/bin/qpcr/dCt_threshold" $OUTFILE_PRE $HT_FILE $HT_TYPE
+#python /Users/$ROOT_LOCAL/bin/qpcr/qBio_Quantify.py Ct_summary_input "/Users/$ROOT_LOCAL/bin/qpcr/dCt_threshold" $OUTFILE_PRE $HT_FILE $HT_TYPE $HT_CUTOFF
 
 #Clean up, remove temporary files. 
 rm temp_formatted_results

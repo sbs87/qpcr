@@ -101,6 +101,7 @@ thres_filename=sys.argv[2] #Pointing to threshold file, contained in .sh script,
 outfile_prefix=sys.argv[3] #formatting to outfile filename prefix, formatted by .sh script as qBio_subID_WXDY_MMDDYY_
 rRNA16s_filename=sys.argv[4] #Should be changed to HTMethod_filename, but this points to the HT method data filename, ie, reads or abundance values for 16s or metagenome
 HT_type=sys.argv[5] #Passed from command line, this is either 16s or meta and will be used to write output files depending on the HT method 
+ht_count_thres=sys.argv[6] #assignment to ht_method cutoff
 
 #The folliing read in the entire filecontnes using a custom bmath package filereader. 
 data_file=bmath.readfile(data_filename) 
@@ -133,7 +134,7 @@ Ct_controls=read_ct(data_file,control_list) #Assings only controls (in control_l
 Ct_controls_combined=generate_control_means(Ct_controls) #This takes control vals and cals mean for "bacterial" and "human" and updates the control hash
 Ct_controls.update(Ct_controls_combined)
 Ct_thresholds=read_ct(thres_file,sample_list) #Reads in control Ct and stdev thresholds for later
-ht_count_thres=2 #Hardcoded assignment to ht_method cutoff.. CHANGE so that it is not hardcoded and changes depending on absolute counts vs relative abundance
+
 
 control_list.append("bacterial") #Updates the control list accordlingly
 control_list.append("human")

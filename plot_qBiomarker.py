@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import color_maps as cmc
 
-file= cutsom_utilities.readfile("qPCR_dCt_alltimes")
+file= cutsom_utilities.readfile("newinfile.txt")
 
 cmap3=cmc.discrete_cmap(4)
 
@@ -34,14 +34,17 @@ def read_agreement():
 dates, species, X=read_agreement()
 fig = plt.figure()
 ax = fig.add_subplot(111)
-ax.imshow(X, cmap=cm.get_cmap("afmhot"), interpolation='nearest',aspect='auto')
-
+ax.imshow(X, cmap=cmap3, interpolation='nearest',aspect='auto')
+#cm.get_cmap("afmhot")
 numrows, numcols = X.shape
 numdates=len(dates)
 
 numspecies=len(species)
 xticks(range(numdates),dates,rotation=0)
 yticks(range(numspecies),species,rotation=0)
+text(1.5,2,"2.22|-5")
+
+
 
 def format_coord(x, y):
     col = int(x+0.5)
@@ -53,6 +56,7 @@ def format_coord(x, y):
         return 'x=%1.4f, y=%1.4f'%(x, y)
 
 ax.format_coord = format_coord
+
 plt.show()
 
 
@@ -60,7 +64,7 @@ plt.show()
 #--------------------------------------------------------------
 Y=([1,20,21],[40,3,8])
 #Species1[Method1,Method2]
-print Y
-plot(Y)
 
-show()
+#plot(Y)
+
+#show()
