@@ -26,37 +26,37 @@ HT_TYPE=$3 #Either 16s or meta. Defines output stream variables (directory and f
 HT_CUTOFF=$4 #Cutoff for count or metagenomic calls (present/absent_
 
 #cut appropriate fields from results file, corresponding to well #, Ct val, and t/f hidden from Rn plot
-awk '{print $3 "\t" $7" \t" $10}' $INFILE | sed -n 10,394p > temp_formatted_results
+#awk '{print $3 "\t" $7" \t" $10}' $INFILE | sed -n 10,394p > temp_formatted_results
 
 #-----Run QC and mapping script, inputting the infile-formaated name for control and samples, as well as a pointer to the plot and source files
 
-python /Users/$ROOT_LOCAL/bin/qpcr/qBio_Map_QC.py temp_formatted_results $OUTFILE $OUTFILE_CONTROL $PLOTFILE $SOURCEFILE
+#python /Users/$ROOT_LOCAL/bin/qpcr/qBio_Map_QC.py temp_formatted_results $OUTFILE $OUTFILE_CONTROL $PLOTFILE $SOURCEFILE
 
 #Do some file manipulation so that they can be opened with Excel
-cp $OUTFILE "$OUTFILE.xls"
-cp $OUTFILE_CONTROL "$OUTFILE_CONTROL.xls"
+#cp $OUTFILE "$OUTFILE.xls"
+#cp $OUTFILE_CONTROL "$OUTFILE_CONTROL.xls"
 
 #Open results files so that user can format, save, print and paste into lab notebook
-open "$OUTFILE.xls"
-open "$OUTFILE_CONTROL.xls"
-open "$PLOTFILE.png"
+#open "$OUTFILE.xls"
+#open "$OUTFILE_CONTROL.xls"
+#open "$PLOTFILE.png"
 
 #Format the QC'd, ampped files for input into the quant script/ The cut, cat takes only the mean ct vals from the samples and control files generated above
-#cut -f1,6,7 $OUTFILE | sed -n 2,85p > temp_sampleCt #only species:mean ct, stdev from samples
-#cut -f1,10,11 $OUTFILE_CONTROL | sed -n 2,7p > temp_controlCt #only species: mean ct, stdev from controls
-#cat temp_sampleCt temp_controlCt > Ct_summary_input #cat file of both to be read into quant script
+cut -f1,6,7 $OUTFILE | sed -n 2,85p > temp_sampleCt #only species:mean ct, stdev from samples
+cut -f1,10,11 $OUTFILE_CONTROL | sed -n 2,7p > temp_controlCt #only species: mean ct, stdev from controls
+cat temp_sampleCt temp_controlCt > Ct_summary_input #cat file of both to be read into quant script
 
 #Make directories for use in quant script. Note that these are hardcoded in the quant script. Also assumed to be in study directory
-#mkdir HT_Compare_$HT_TYPE #THIS IS NOT OMPTIMAL. CHANGE. 
-#mkdir Quantification
+mkdir HT_Compare_$HT_TYPE #THIS IS NOT OMPTIMAL. CHANGE. 
+mkdir Quantification
 
 #----Run quant script. Takes the Ct mean/stdev formatted file as input, along with hardcoded threshold vals, the outut file formatted, and HT file info. HT_FILE is pointer to 16s or metagenomic data. HT_TYPE is either 16s or meta. Read from command line
-#python /Users/$ROOT_LOCAL/bin/qpcr/qBio_Quantify.py Ct_summary_input "/Users/$ROOT_LOCAL/bin/qpcr/dCt_threshold" $OUTFILE_PRE $HT_FILE $HT_TYPE $HT_CUTOFF
+python /Users/$ROOT_LOCAL/bin/qpcr/qBio_Quantify.py Ct_summary_input "/Users/$ROOT_LOCAL/bin/qpcr/dCt_threshold" $OUTFILE_PRE $HT_FILE $HT_TYPE $HT_CUTOFF
 
 #Clean up, remove temporary files. 
-rm temp_formatted_results
-#rm temp_sampleCt
-#rm temp_controlCt
+#rm temp_formatted_results
+rm temp_sampleCt
+rm temp_controlCt
 
 #----END OF SCRIPT----
 
